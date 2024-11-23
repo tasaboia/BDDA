@@ -1,5 +1,20 @@
-# docker-hadoop-hive-parquet
+# Docker Hadoop Hive Parquet
 
-This project will showcase how to spin up a Hadoop cluster with Hive in order to run SQL queries on Parquet files. Images for the nodes are based on https://hub.docker.com/u/bde2020 base images.
+Este projeto configura um ambiente completo com Hadoop, Hive, Hue e PostgreSQL usando Docker Compose. Ele é útil para processar e analisar grandes volumes de dados de forma distribuída.
 
-All of this makes more sense if you follow the link in the repository to the article on Medium :)
+---
+
+## Pré-requisitos
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+---
+
+## Como usar o projeto
+
+1. Clone este repositório:
+   ```bash
+   git clone https://github.com/<seu-usuario>/<nome-do-repositorio>.git
+   cd <nome-do-repositorio>
+   ```
