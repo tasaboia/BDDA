@@ -1,0 +1,14 @@
+FROM bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+
+# Instala o Hadoop completo
+RUN curl -O https://archive.apache.org/dist/hadoop/common/hadoop-3.2.1/hadoop-3.2.1.tar.gz && \
+    tar -xzvf hadoop-3.2.1.tar.gz -C /opt/ && \
+    mv /opt/hadoop-3.2.1 /opt/hadoop && \
+    rm hadoop-3.2.1.tar.gz && \
+    chmod -R 755 /opt/hadoop
+
+# Adicionar o Hadoop ao PATH
+ENV PATH=$PATH:/opt/hadoop/bin:/opt/hadoop/sbin
+
+# Configura as permissões
+RUN chmod -R 755 /opt/hadoop
