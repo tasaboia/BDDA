@@ -75,9 +75,69 @@ services:
     env_file:
       - ./hadoop.env
 
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: hive
+      POSTGRES_DB: metastore
+    ports:
+      - "5432:5432" # Porta do banco de dados
+    networks:
+      - hadoop
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  hive-metastore:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-metastore
+    environment:
+      - HIVE_METASTORE_USER=hive
+      - HIVE_METASTORE_PASSWORD=hive
+      - HIVE_METASTORE_DB=metastore
+      - HIVE_METASTORE_HOST=hive-metastore
+      - HIVE_CONF_hive_metastore_uris=thrift://hive-metastore:9083
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - HADOOP_HEAPSIZE=512
+      - JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+      - CORE_CONF_hadoop_proxyuser_hive_hosts=*
+
+    networks:
+      - hadoop
+    depends_on:
+      - namenode
+      - datanode
+      - resourcemanager
+      - postgres
+    ports:
+      - "9083:9083"
+    volumes:
+      - ./hive-site.xml:/opt/hive/conf/hive-site.xml
+
+  hive-server:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-server
+    environment:
+      - HIVE_METASTORE_URI=thrift://hive-metastore:9083
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - HADOOP_HEAPSIZE=1024
+      - JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+    networks:
+      - hadoop
+    depends_on:
+      - hive-metastore
+      - namenode
+    ports:
+      - "10000:10000"
+    volumes:
+      - ./hive-site.xml:/opt/hive/conf/hive-site.xml
+
 volumes:
   namenode_data:
   datanode_data:
+  postgres_data:
 
 networks:
   hadoop:
